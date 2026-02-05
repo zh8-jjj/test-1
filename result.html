@@ -18,6 +18,20 @@ padding:24px;
 margin-bottom:24px;
 }
 h1{font-size:28px;}
+/* 新增：思想家图片样式 */
+.thinker-card {
+display: flex;
+align-items: center;
+gap: 20px;
+flex-wrap: wrap; /* 移动端换行 */
+}
+.thinker-img {
+width: 120px;
+height: 120px;
+border-radius: 50%; /* 圆形头像 */
+object-fit: cover; /* 保持比例 */
+border: 3px solid #f0f0f0; /* 边框装饰 */
+}
 .bar-bg{background:#e5e7eb;height:10px;border-radius:6px;}
 .bar-fill{background:#2f6fed;height:10px;border-radius:6px;}
 </style>
@@ -25,9 +39,13 @@ h1{font-size:28px;}
 
 <body>
 
-<div class="card">
-<h1 id="type"></h1>
-<p id="thinker"></p>
+<div class="card thinker-card">
+  <!-- 新增：思想家图片容器 -->
+  <img id="thinker-img" class="thinker-img" src="" alt="思想家头像">
+  <div>
+    <h1 id="type"></h1>
+    <p id="thinker"></p>
+  </div>
 </div>
 
 <div class="card" id="traits"></div>
@@ -40,6 +58,7 @@ const types = [
 {
 name:"制度理性取向",
 thinker:"约翰·罗尔斯",
+img: "rawls.jpg", // 对应图片文件名
 traits:"重视程序、规则与可讨论性",
 limits:"容易低估权力与现实差异",
 books:["《正义论》","《政治自由主义》"]
@@ -47,6 +66,7 @@ books:["《正义论》","《政治自由主义》"]
 {
 name:"权力批判取向",
 thinker:"米歇尔·福柯",
+img: "foucault.jpg",
 traits:"善于揭示结构与话语",
 limits:"不易给出规范答案",
 books:["《规训与惩罚》","《知识考古学》"]
@@ -54,6 +74,7 @@ books:["《规训与惩罚》","《知识考古学》"]
 {
 name:"现实物质取向",
 thinker:"卡尔·马克思",
+img: "marx.jpg",
 traits:"强调条件、资源与阶级",
 limits:"容易被视为经济还原",
 books:["《德意志意识形态》","《资本论》"]
@@ -61,6 +82,7 @@ books:["《德意志意识形态》","《资本论》"]
 {
 name:"解构反思取向",
 thinker:"雅克·德里达",
+img: "derrida.jpg",
 traits:"拒绝单一立场",
 limits:"不适合快速决策",
 books:["《论文字学》","《书写与差异》"]
@@ -70,6 +92,11 @@ books:["《论文字学》","《书写与差异》"]
 const max = scores.indexOf(Math.max(...scores));
 const t = types[max];
 
+// 渲染图片
+document.getElementById("thinker-img").src = t.img;
+document.getElementById("thinker-img").alt = t.thinker;
+
+// 原有文本渲染
 document.getElementById("type").innerText = t.name;
 document.getElementById("thinker").innerText = "代表思想家：" + t.thinker;
 document.getElementById("traits").innerText = "表达特点：" + t.traits;
