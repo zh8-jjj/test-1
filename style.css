@@ -60,3 +60,24 @@ transition: border-color 0.2s;
 button:hover {
 border-color: #e63946; /* 与进度条主色呼应 */
 }
+
+/* 放在你原有CSS的最后即可 */
+/* 思想家图片样式 */
+.thinker-card {
+display: flex;
+align-items: center;
+gap: 20px;
+flex-wrap: wrap; /* 移动端换行 */
+}
+.thinker-img {
+width: 120px;
+height: 120px;
+border-radius: 50%; /* 圆形头像 */
+object-fit: cover; /* 保持比例 */
+border: 3px solid #f0f0f0; /* 边框装饰 */
+transition: transform 0.2s; /* hover放大效果 */
+}
+.thinker-img:hover {
+transform: scale(1.05); /* 鼠标悬浮放大5% */
+}
+
