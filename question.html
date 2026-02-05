@@ -5,190 +5,263 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>哲学表达范式测试 - 答题页</title>
     <style>
-        /* 保留所有原有样式，无需修改 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "SimSun", serif;
-        }
-        body {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-        .container {
-            max-width: 850px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-        }
-        .progress-container {
-            margin-bottom: 30px;
-            position: relative;
-        }
-        .progress-bar {
-            height: 10px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background-color: #2c3e50;
-            width: 0%;
-            transition: width 0.4s ease;
-        }
-        .progress-text {
-            margin-top: 8px;
-            font-size: 14px;
-            color: #6c757d;
-            text-align: right;
-        }
-        .question-card {
-            display: none; /* 默认隐藏所有题目 */
-        }
-        .question-card.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .question-title {
-            font-size: 18px;
-            margin-bottom: 25px;
-            line-height: 1.7;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-        .option-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .option-btn {
-            padding: 15px 20px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            background: white;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.25s;
-            font-size: 16px;
-            color: #495057;
-        }
-        .option-btn:hover {
-            border-color: #2c3e50;
-            background-color: #f8f9fa;
-        }
-        .option-btn:active {
-            background-color: #e9ecef;
-            border-color: #1a252f;
-        }
-        /* 响应式适配 */
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px 15px;
-            }
-            .question-title {
-                font-size: 16px;
-                margin-bottom: 20px;
-            }
-            .option-btn {
-                font-size: 14px;
-                padding: 12px 15px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "SimSun", serif; }
+        body { background: #f8f9fa; padding: 20px; }
+        .container { max-width: 850px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 15px rgba(0,0,0,0.08); }
+        .progress { margin-bottom: 30px; }
+        .progress-bar { height: 10px; background: #e9ecef; border-radius: 5px; }
+        .progress-fill { height: 100%; background: #2c3e50; width: 5%; }
+        .progress-text { margin-top: 8px; font-size: 14px; color: #6c757d; text-align: right; }
+        .question { font-size: 18px; margin-bottom: 25px; line-height: 1.7; color: #2c3e50; font-weight: 600; }
+        .options { display: flex; flex-direction: column; gap: 15px; }
+        .option { padding: 15px 20px; border: 2px solid #dee2e6; border-radius: 8px; background: white; text-align: left; cursor: pointer; font-size: 16px; color: #495057; }
+        .option:hover { border-color: #2c3e50; background: #f8f9fa; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 进度条区域 -->
-        <div class="progress-container">
+        <!-- 进度条 -->
+        <div class="progress">
             <div class="progress-bar">
                 <div id="progress-fill" class="progress-fill"></div>
             </div>
-            <div class="progress-text" id="progress-text">1/20</div>
+            <div id="progress-text" class="progress-text">1/20</div>
         </div>
 
-        <!-- 题目区域（保留你的20道题，无需修改） -->
-        <div class="question-list">
-            <!-- Q1 -->
-            <div class="question-card" data-index="0">
-                <div class="question-title">Q1 当 “自由” 被反复提起时，你第一反应是：</div>
-                <div class="option-list">
-                    <div class="option-btn" onclick="answer(0)">A：先问：现有法律和程序能否保障自由？</div>
-                    <div class="option-btn" onclick="answer(1)">B：怀疑：谁在喊 “自由”，这句话有话语目的？</div>
-                    <div class="option-btn" onclick="answer(2)">C：想到：没有生存保障时，自由是空壳子。</div>
-                    <div class="option-btn" onclick="answer(3)">D：警觉：统一的 “自由” 会抹去差异与经验。</div>
-                </div>
-            </div>
-
-            <!-- 此处省略Q2-Q19的代码（和之前一致，无需修改） -->
-
-            <!-- Q20 -->
-            <div class="question-card" data-index="19">
-                <div class="question-title">Q20 如果只能选一句最符合你的表达信念：</div>
-                <div class="option-list">
-                    <div class="option-btn" onclick="answer(0)">A：规则可被完善，但需程序与耐心。</div>
-                    <div class="option-btn" onclick="answer(1)">B：权力必须被直视与重构，否则空谈。</div>
-                    <div class="option-btn" onclick="answer(2)">C：先解决物质生存再谈话语与形式。</div>
-                    <div class="option-btn" onclick="answer(3)">D：承认并保留差异，比追求统一更重要。</div>
-                </div>
+        <!-- 题目容器 -->
+        <div id="question-container">
+            <div class="question" id="question-text">Q1 当 “自由” 被反复提起时，你第一反应是：</div>
+            <div class="options" id="option-list">
+                <div class="option" onclick="selectOption(0)">A：先问：现有法律和程序能否保障自由？</div>
+                <div class="option" onclick="selectOption(1)">B：怀疑：谁在喊 “自由”，这句话有话语目的？</div>
+                <div class="option" onclick="selectOption(2)">C：想到：没有生存保障时，自由是空壳子。</div>
+                <div class="option" onclick="selectOption(3)">D：警觉：统一的 “自由” 会抹去差异与经验。</div>
             </div>
         </div>
     </div>
 
     <script>
-        // 初始化全局变量
-        let currentQuestion = 0; 
-        const scores = [0, 0, 0, 0]; 
-        const questions = document.querySelectorAll('.question-card'); 
-        const progressFill = document.getElementById('progress-fill');
-        const progressText = document.getElementById('progress-text');
+        // 初始化变量
+        let currentQ = 1; // 当前题目（从1开始）
+        const scores = [0, 0, 0, 0]; // A/B/C/D得分
+        
+        // 完整20道题的题目+选项配置
+        const quizData = [
+            {
+                question: "Q1 当 “自由” 被反复提起时，你第一反应是：",
+                options: [
+                    "A：先问：现有法律和程序能否保障自由？",
+                    "B：怀疑：谁在喊 “自由”，这句话有话语目的？",
+                    "C：想到：没有生存保障时，自由是空壳子。",
+                    "D：警觉：统一的 “自由” 会抹去差异与经验。"
+                ]
+            },
+            {
+                question: "Q2 面对热门社会议题，你更倾向于：",
+                options: [
+                    "A：先梳理议题的核心规则与边界，再发表观点。",
+                    "B：拆解议题背后的利益相关方，看谁在主导话语权。",
+                    "C：优先关注议题对普通人现实生活的实际影响。",
+                    "D：收集不同群体的真实感受，避免单一视角判断。"
+                ]
+            },
+            {
+                question: "Q3 你认为有效的沟通，最重要的是：",
+                options: [
+                    "A：逻辑清晰，论据扎实，符合共同认可的标准。",
+                    "B：识别沟通中的权力关系，避免被话术误导。",
+                    "C：能落地，能解决实际问题，而非空谈理论。",
+                    "D：尊重彼此的经验差异，不强行统一观点。"
+                ]
+            },
+            {
+                question: "Q4 当他人与你观点冲突时，你会：",
+                options: [
+                    "A：先核对双方的论证逻辑，找分歧的核心点。",
+                    "B：思考对方的立场背后，是否有未说出口的利益。",
+                    "C：先看冲突是否影响实际利益，再决定是否争论。",
+                    "D：尝试理解对方的成长背景，接纳不同的视角。"
+                ]
+            },
+            {
+                question: "Q5 你如何看待“真理”这个词：",
+                options: [
+                    "A：真理是可验证、可重复的客观规律。",
+                    "B：真理是特定群体定义的，服务于其权力。",
+                    "C：真理是能解决现实问题的有效假设。",
+                    "D：真理是多元的，存在于不同人的经验中。"
+                ]
+            },
+            {
+                question: "Q6 表达观点时，你更在意：",
+                options: [
+                    "A：是否符合逻辑，是否有足够的证据支撑。",
+                    "B：是否能拆解背后的权力结构，不被表象迷惑。",
+                    "C：是否能转化为具体行动，产生实际价值。",
+                    "D：是否能包容不同声音，不忽视少数人的感受。"
+                ]
+            },
+            {
+                question: "Q7 你对“权威观点”的态度是：",
+                options: [
+                    "A：看其论证过程是否符合规则，而非权威本身。",
+                    "B：质疑权威的话语权来源，是否压制了其他声音。",
+                    "C：看其是否能解决实际问题，再决定是否认同。",
+                    "D：结合自身经验判断，不盲从也不刻意反对。"
+                ]
+            },
+            {
+                question: "Q8 讨论中，你最反感的是：",
+                options: [
+                    "A：逻辑混乱，偷换概念，不遵守讨论规则。",
+                    "B：用“中立”“客观”包装自身的权力诉求。",
+                    "C：空谈理想，不考虑现实条件和执行难度。",
+                    "D：用自身经验代替所有人，忽视个体差异。"
+                ]
+            },
+            {
+                question: "Q9 你认为“理性”的核心是：",
+                options: [
+                    "A：遵循逻辑规则，排除情绪干扰的思考方式。",
+                    "B：看清权力运作，不被意识形态绑架的清醒。",
+                    "C：以现实为基础，追求实际效果的思维模式。",
+                    "D：包容多元视角，不偏执于单一答案的心态。"
+                ]
+            },
+            {
+                question: "Q10 面对模糊的问题，你会：",
+                options: [
+                    "A：先定义问题的边界和规则，再寻找答案。",
+                    "B：追问问题的提出者，看其背后的潜在意图。",
+                    "C：先找类似的现实案例，从实践中找思路。",
+                    "D：收集不同人的理解，再整合多元答案。"
+                ]
+            },
+            {
+                question: "Q11 你更认同哪种表达风格：",
+                options: [
+                    "A：严谨精准，用词规范，论据充分。",
+                    "B：犀利深刻，直击本质，拆解话术。",
+                    "C：务实落地，聚焦结果，少谈虚的。",
+                    "D：温和包容，倾听为主，求同存异。"
+                ]
+            },
+            {
+                question: "Q12 你如何看待“情绪表达”：",
+                options: [
+                    "A：情绪需被理性约束，不能主导判断。",
+                    "B：情绪是权力的载体，反映背后的压迫。",
+                    "C：情绪要服务于实际需求，而非单纯宣泄。",
+                    "D：情绪是真实的表达，应被看见和接纳。"
+                ]
+            },
+            {
+                question: "Q13 讨论时，你更关注：",
+                options: [
+                    "A：讨论是否围绕核心议题，逻辑是否闭环。",
+                    "B：谁在主导讨论，谁的声音被忽略了。",
+                    "C：讨论能否产生实际价值，解决具体问题。",
+                    "D：每个人是否都有表达的空间，感受是否被尊重。"
+                ]
+            },
+            {
+                question: "Q14 你认为“说服他人”的关键是：",
+                options: [
+                    "A：用逻辑和证据，让对方认同你的论证。",
+                    "B：拆解对方的认知框架，动摇其底层假设。",
+                    "C：展示观点的实际好处，贴合对方的现实利益。",
+                    "D：理解对方的立场，找到彼此的共情点。"
+                ]
+            },
+            {
+                question: "Q15 面对“少数派观点”，你会：",
+                options: [
+                    "A：按同一标准评判其逻辑，不因其小众而否定。",
+                    "B：关注其被边缘化的原因，是否被权力压制。",
+                    "C：看其是否有实际价值，再决定是否关注。",
+                    "D：主动倾听，认为小众观点也有存在的意义。"
+                ]
+            },
+            {
+                question: "Q16 你更在意表达的：",
+                options: [
+                    "A：准确性，是否精准传递了核心信息。",
+                    "B：批判性，是否能挑战既有的话语体系。",
+                    "C：实用性，是否能解决当下的实际问题。",
+                    "D：包容性，是否考虑到不同人的感受。"
+                ]
+            },
+            {
+                question: "Q17 你对“规则”的看法是：",
+                options: [
+                    "A：规则是保障公平的基础，应被普遍遵守。",
+                    "B：规则是权力的产物，需不断质疑和重构。",
+                    "C：规则应服务于现实需求，可灵活调整。",
+                    "D：规则应兼顾个体差异，避免一刀切。"
+                ]
+            },
+            {
+                question: "Q18 讨论中，你会优先考虑：",
+                options: [
+                    "A：讨论的程序是否公平，是否遵循共同规则。",
+                    "B：讨论的话语权是否平等，是否存在压制。",
+                    "C：讨论的结果是否有实际意义，能否落地。",
+                    "D：讨论的氛围是否友好，是否尊重每个人。"
+                ]
+            },
+            {
+                question: "Q19 你认为“公平”的前提是：",
+                options: [
+                    "A：所有人遵循同一套规则，无特殊对待。",
+                    "B：权力结构被解构，每个人都有平等的话语权。",
+                    "C：每个人的现实需求都能被满足，而非形式平等。",
+                    "D：每个人的差异都被看见，按需分配而非平均。"
+                ]
+            },
+            {
+                question: "Q20 如果只能选一句最符合你的表达信念：",
+                options: [
+                    "A：规则可被完善，但需程序与耐心。",
+                    "B：权力必须被直视与重构，否则空谈。",
+                    "C：先解决物质生存再谈话语与形式。",
+                    "D：承认并保留差异，比追求统一更重要。"
+                ]
+            }
+        ];
 
-        // 页面加载初始化
-        function initQuiz() {
-            questions[currentQuestion].classList.add('active');
-            updateProgress();
-            console.log("初始化完成，当前题目数：", questions.length); // 调试日志
-        }
-
-        // 修复核心：答题逻辑（关键改跳转触发条件）
-        function answer(choice) {
-            scores[choice]++; 
+        // 选项点击逻辑
+        function selectOption(choice) {
+            // 累加得分
+            scores[choice]++;
             
-            // 切换题目
-            questions[currentQuestion].classList.remove('active');
-            currentQuestion++;
-            updateProgress();
-
-            // 修复：判断是否答完20题（currentQuestion === 20 时跳转）
-            if (currentQuestion < questions.length) {
-                questions[currentQuestion].classList.add('active');
-                console.log("当前答题进度：", currentQuestion + 1, "/20"); // 调试日志
-            } else {
-                // 修复：强制使用绝对路径跳转（避免相对路径错误）
+            // 题目未完成：切换下一题
+            if (currentQ < 20) {
+                currentQ++;
+                // 更新题目文本
+                document.getElementById("question-text").textContent = quizData[currentQ - 1].question;
+                // 更新选项列表
+                const optionList = document.getElementById("option-list");
+                optionList.innerHTML = ""; // 清空原有选项
+                quizData[currentQ - 1].options.forEach((opt, idx) => {
+                    const optionDiv = document.createElement("div");
+                    optionDiv.className = "option";
+                    optionDiv.onclick = () => selectOption(idx);
+                    optionDiv.textContent = opt;
+                    optionList.appendChild(optionDiv);
+                });
+                // 更新进度条
+                const progress = (currentQ / 20) * 100;
+                document.getElementById("progress-fill").style.width = `${progress}%`;
+                document.getElementById("progress-text").textContent = `${currentQ}/20`;
+            } 
+            // 题目完成：强制跳转结果页
+            else {
                 const scoreStr = scores.join(',');
-                console.log("答题完成，得分：", scoreStr); // 调试日志
-                // 重点：确认 result.html 和 question.html 在同一目录！
-                window.location.href = `./result.html?scores=${scoreStr}`; 
+                console.log("答题完成，得分：", scoreStr);
+                // 优先用replace避免历史记录问题，确保跳转
+                location.replace(`result.html?scores=${scoreStr}`);
             }
         }
-
-        // 更新进度条
-        function updateProgress() {
-            const total = questions.length;
-            const progress = (currentQuestion / total) * 100;
-            progressFill.style.width = `${progress}%`;
-            progressText.textContent = `${currentQuestion + 1}/${total}`; // 修复：进度文本显示正确（1/20 而非 0/20）
-        }
-
-        // 页面加载时启动
-        window.onload = initQuiz;
     </script>
 </body>
 </html>
