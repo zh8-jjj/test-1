@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公共言说的思想印记</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimSun", 宋体, serif; /* 替换为宋体 */
+        }
+
+        /* 页面主体布局 */
+        body {
+            background-color: #f9f9f9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        /* 主标题样式（宋体优化） */
+        .main-title {
+            font-size: 2.8rem;
+            color: #333;
+            font-weight: 600; /* 宋体加粗更有质感 */
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em; /* 宋体字间距稍大更美观 */
+        }
+
+        /* 副标题样式 */
+        .sub-title {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* 引导语样式 */
+        .guide-text {
+            font-size: 0.95rem;
+            color: #888;
+            line-height: 1.8; /* 宋体行高稍大提升可读性 */
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        /* 按钮样式 */
+        .start-btn {
+            background-color: #222;
+            color: #fff;
+            border: none;
+            padding: 12px 36px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            letter-spacing: 0.1em; /* 按钮文字字间距呼应标题 */
+            font-family: "SimSun", 宋体, serif; /* 按钮同步宋体 */
+        }
+
+        .start-btn:hover {
+            background-color: #444;
+        }
+
+        /* 署名样式 */
+        .curator {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 3rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+                letter-spacing: 0.08em;
+            }
+            .sub-title {
+                font-size: 1rem;
+            }
+            .guide-text {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="main-title">公共言说的思想印记</h1>
+    <h2 class="sub-title">你的言说方式，与哪位思想先驱同频？</h2>
+    <p class="guide-text">基于经典思想家的表达范式，通过20组情境式思辨题，定位你的思想表达坐标。</p>
+    <button class="start-btn">开启思想溯源</button>
+    <p class="curator">Curated by [你的署名/品牌]</p>
+</body>
+</html>
