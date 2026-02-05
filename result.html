@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>哲学表达范式测试 - 结果页</title>
     <style>
+        /* 保留所有原有样式，无需修改 */
         * {
             margin: 0;
             padding: 0;
@@ -42,7 +43,6 @@
             flex-direction: column;
             gap: 30px;
         }
-        /* 指标得分卡片 */
         .score-card {
             background-color: #fafafa;
             border-radius: 10px;
@@ -79,7 +79,6 @@
             margin-top: 5px;
             line-height: 1.5;
         }
-        /* 表达类型卡片 */
         .type-card {
             border-radius: 10px;
             padding: 30px;
@@ -132,7 +131,6 @@
         .type-section li {
             margin-bottom: 8px;
         }
-        /* 书单区域 */
         .book-list {
             display: flex;
             flex-wrap: wrap;
@@ -147,7 +145,6 @@
             color: #2c3e50;
             border: 1px solid #dee2e6;
         }
-        /* 重新测试按钮 */
         .restart-btn {
             margin: 30px auto 0;
             display: block;
@@ -163,7 +160,6 @@
         .restart-btn:hover {
             background-color: #1a252f;
         }
-        /* 响应式适配 */
         @media (max-width: 600px) {
             .container {
                 padding: 20px 15px;
@@ -191,7 +187,7 @@
         </div>
 
         <div class="result-content">
-            <!-- 核心指标得分（严格按你的指标定义） -->
+            <!-- 核心指标得分 -->
             <div class="score-card">
                 <h3>📊 核心指标得分（得分=选项选择次数÷20×100%）</h3>
                 <div class="score-list">
@@ -218,7 +214,7 @@
                 </div>
             </div>
 
-            <!-- 表达类型结果（完全按你的4种类型） -->
+            <!-- 表达类型结果 -->
             <div class="type-card" id="type-content">
                 <div class="type-header">
                     <div class="type-icon" id="type-icon">📏</div>
@@ -263,15 +259,14 @@
                 </div>
             </div>
 
-            <!-- 重新测试按钮 -->
+            <!-- 修复：重新测试按钮跳转到答题页（question.html） -->
             <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
         </div>
     </div>
 
     <script>
-        // 严格按你的4种表达类型定义匹配规则
+        // 保留所有原有typeMap定义（无需修改）
         const typeMap = [
-            // 0: 规则理性型（A选项主导）
             {
                 icon: "📏",
                 name: "规则理性型",
@@ -290,7 +285,6 @@
                 ],
                 books: ["《简单的逻辑学》", "《公正：该如何做是好？》", "《学会提问》"]
             },
-            // 1: 权力解构型（B选项主导）
             {
                 icon: "🔍",
                 name: "权力解构型",
@@ -309,7 +303,6 @@
                 ],
                 books: ["《娱乐至死》", "《置身事内：中国政府与经济发展》", "《策略思维：商界、政界及日常生活中的策略竞争》"]
             },
-            // 2: 现实务实型（C选项主导）
             {
                 icon: "🧱",
                 name: "现实务实型",
@@ -328,7 +321,6 @@
                 ],
                 books: ["《贫穷的本质：我们为什么摆脱不了贫穷》", "《搞定：无压工作的艺术》", "《远见：如何规划职业生涯 3 大阶段》"]
             },
-            // 3: 差异包容型（D选项主导）
             {
                 icon: "🌈",
                 name: "差异包容型",
@@ -349,43 +341,38 @@
             }
         ];
 
-        // 从URL获取得分并计算百分比（按你的指标公式：得分=选择次数÷20×100%）
+        // 保留所有原有得分解析逻辑（无需修改）
         function getScoresFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
             const scoreStr = urlParams.get('scores');
             if (!scoreStr) {
-                window.location.href = 'index.html'; // 无得分跳首页
+                // 修复：无得分时跳转到答题页（而非首页）
+                window.location.href = './question.html'; 
                 return [];
             }
             const rawScores = scoreStr.split(',').map(Number);
-            // 计算百分比（保留整数）
             const percentScores = rawScores.map(score => Math.round((score / 20) * 100));
             return { raw: rawScores, percent: percentScores };
         }
 
-        // 匹配最高分得表达类型，渲染结果
         function showResult() {
             const { raw, percent } = getScoresFromURL();
             if (percent.length !== 4) return;
 
-            // 显示4项指标百分比得分
             percent.forEach((score, index) => {
                 document.getElementById(`score-${index}`).textContent = `${score}%`;
             });
 
-            // 找到最高分维度（同分取第一个）
             let maxScore = Math.max(...raw);
             let maxIndex = raw.indexOf(maxScore);
             const currentType = typeMap[maxIndex];
 
-            // 渲染表达类型详情（完全按你的内容）
             document.getElementById('type-icon').textContent = currentType.icon;
             document.getElementById('type-name').textContent = currentType.name;
             document.getElementById('type-mentor').textContent = currentType.mentor;
             document.getElementById('type-quote').textContent = currentType.quote;
             document.getElementById('type-intro').textContent = currentType.intro;
             
-            // 渲染核心特质
             const traitsList = document.getElementById('type-traits');
             traitsList.innerHTML = '';
             currentType.traits.forEach(trait => {
@@ -394,7 +381,6 @@
                 traitsList.appendChild(li);
             });
 
-            // 渲染局限性
             const limitationsList = document.getElementById('type-limitations');
             limitationsList.innerHTML = '';
             currentType.limitations.forEach(limitation => {
@@ -403,7 +389,6 @@
                 limitationsList.appendChild(li);
             });
 
-            // 渲染书单
             const bookList = document.getElementById('type-books');
             bookList.innerHTML = '';
             currentType.books.forEach(book => {
@@ -414,12 +399,11 @@
             });
         }
 
-        // 重新测试
+        // 修复：重新测试跳转到答题页（question.html）
         function restartQuiz() {
-            window.location.href = 'index.html';
+            window.location.href = './question.html';
         }
 
-        // 页面加载渲染结果
         window.onload = showResult;
     </script>
 </body>
