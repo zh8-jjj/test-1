@@ -2,40 +2,113 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>跳转测试</title>
-    <!-- 解决移动端/特殊场景跳转问题 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <!-- 方案1：普通链接跳转（最稳定） -->
-    <a href="https://www.baidu.com" target="_blank" rel="noopener noreferrer">
-        点击跳转到百度
-    </a>
+    <title>探索公共表达的思想锚点</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimSun", 宋体, serif; /* 替换为宋体 */
+        }
 
-    <br><br>
+        /* 页面主体布局 */
+        body {
+            background-color: #f9f9f9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
 
-    <!-- 方案2：JS触发跳转（解决标签跳转失效的情况） -->
-    <button onclick="jumpToUrl()">JS点击跳转</button>
+        /* 主标题样式（宋体优化） */
+        .main-title {
+            font-size: 2.8rem;
+            color: #333;
+            font-weight: 600; /* 宋体加粗更有质感 */
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em; /* 宋体字间距稍大更美观 */
+        }
 
-    <script>
-        // 封装跳转函数，增加异常处理
-        function jumpToUrl() {
-            try {
-                // 目标跳转地址
-                const targetUrl = "https://www.baidu.com";
-                // 方式1：当前窗口跳转
-                // window.location.href = targetUrl;
-                
-                // 方式2：新窗口跳转（推荐，避免被浏览器拦截）
-                window.open(targetUrl, "_blank");
-                
-                console.log("跳转指令已执行，目标地址：", targetUrl);
-            } catch (error) {
-                // 打印错误信息，方便排查
-                console.error("跳转失败原因：", error);
-                alert("跳转失败，请检查地址或网络！");
+        /* 副标题样式 */
+        .sub-title {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* 引导语样式 */
+        .guide-text {
+            font-size: 0.95rem;
+            color: #888;
+            line-height: 1.8; /* 宋体行高稍大提升可读性 */
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        /* 按钮样式 */
+        .start-btn {
+            background-color: #222;
+            color: #fff;
+            border: none;
+            padding: 12px 36px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            letter-spacing: 0.1em; /* 按钮文字字间距呼应标题 */
+            font-family: "SimSun", 宋体, serif; /* 按钮同步宋体 */
+        }
+
+        .start-btn:hover {
+            background-color: #444;
+        }
+
+        /* 署名样式 */
+        .curator {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 3rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+                letter-spacing: 0.08em;
+            }
+            .sub-title {
+                font-size: 1rem;
+            }
+            .guide-text {
+                font-size: 0.85rem;
             }
         }
+    </style>
+</head>
+<body>
+    <h1 class="main-title">探索公共表达的思想锚点</h1>
+    <h2 class="sub-title">你的言说方式，与哪位哲学先驱同频？</h2>
+    <p class="guide-text">基于经典思想家的表达范式，通过20组情境式思辨题，定位你的思想表达坐标。</p>
+    <button class="start-btn">开启思想溯源</button>
+    <p class="curator">@黑房子新沙发BlackHouseNewSofa</p>
+
+    <!-- 新增的跳转逻辑 -->
+    <script>
+        // 1. 获取按钮元素
+        const startBtn = document.querySelector('.start-btn');
+        
+        // 2. 为按钮添加点击事件
+        startBtn.addEventListener('click', function() {
+            // 3. 跳转到question.html页面
+            window.location.href = 'question.html';
+        });
     </script>
 </body>
 </html>
