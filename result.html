@@ -4,105 +4,280 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>你的思想画像</title>
+<!-- 引入共用的CSS（确保和问卷页进度条样式统一） -->
+<link rel="stylesheet" href="style.css">
 <style>
+/* 结果页专属样式（包含图片、条形图、雷达图） */
 body{
-font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei";
-background:#f5f6f8;
-margin:0;
-padding:20px;
+  padding: 20px;
+  padding-top: 40px; /* 避开顶部进度条 */
 }
 .card{
-background:#fff;
-border-radius:14px;
-padding:24px;
-margin-bottom:24px;
+  background:#fff;
+  border-radius:14px;
+  padding:24px;
+  margin-bottom:24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
-h1{font-size:28px;}
-/* 新增：思想家图片样式 */
+h1{font-size:28px;margin:0;}
+h3{font-size:20px;margin:16px 0;}
+
+/* 思想家图片样式 */
 .thinker-card {
-display: flex;
-align-items: center;
-gap: 20px;
-flex-wrap: wrap; /* 移动端换行 */
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap; /* 移动端换行 */
 }
 .thinker-img {
-width: 120px;
-height: 120px;
-border-radius: 50%; /* 圆形头像 */
-object-fit: cover; /* 保持比例 */
-border: 3px solid #f0f0f0; /* 边框装饰 */
+  width: 120px;
+  height: 120px;
+  border-radius: 50%; /* 圆形头像 */
+  object-fit: cover; /* 保持比例 */
+  border: 3px solid #f0f0f0;
+  transition: transform 0.2s;
 }
-.bar-bg{background:#e5e7eb;height:10px;border-radius:6px;}
-.bar-fill{background:#2f6fed;height:10px;border-radius:6px;}
+.thinker-img:hover {
+  transform: scale(1.05); /* 悬浮放大 */
+}
+
+/* 成分条形图样式 */
+.bar-container {
+  margin: 12px 0;
+}
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #333;
+}
+.bar-bg{
+  background:#f0f0f0;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.bar-fill{
+  /* 和进度条同色系，保持视觉统一 */
+  background: linear-gradient(90deg, #e63946, #ff7e67);
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+/* 简易雷达图样式 */
+.radar-container {
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+.radar-grid {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.radar-points {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  fill: rgba(230, 57, 70, 0.2); /* 进度条主色浅透版 */
+  stroke: #e63946;
+  stroke-width: 2px;
+}
+.radar-label {
+  position: absolute;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
 </style>
 </head>
 
 <body>
-
+<!-- 1. 思想家信息+图片 -->
 <div class="card thinker-card">
-  <!-- 新增：思想家图片容器 -->
   <img id="thinker-img" class="thinker-img" src="" alt="思想家头像">
   <div>
     <h1 id="type"></h1>
-    <p id="thinker"></p>
+    <p id="thinker" style="font-size:16px;color:#666;margin:8px 0 0 0;"></p>
   </div>
 </div>
 
+<!-- 2. 成分条形图（各维度得分） -->
+<div class="card">
+  <h3>各维度得分</h3>
+  <div id="score-bars"></div>
+</div>
+
+<!-- 3. 简易雷达图（思想倾向） -->
+<div class="card">
+  <h3>思想倾向雷达图</h3>
+  <div class="radar-container">
+    <canvas class="radar-grid" id="radarGrid"></canvas>
+    <path class="radar-points" id="radarPath"></path>
+    <!-- 雷达图标签 -->
+    <div class="radar-label" style="top: 0; left: 50%; transform: translateX(-50%);">制度理性</div>
+    <div class="radar-label" style="top: 50%; right: 0; transform: translateY(-50%);">权力批判</div>
+    <div class="radar-label" style="bottom: 0; left: 50%; transform: translateX(-50%);">现实物质</div>
+    <div class="radar-label" style="top: 50%; left: 0; transform: translateY(-50%);">解构反思</div>
+  </div>
+</div>
+
+<!-- 4. 原有文本信息 -->
 <div class="card" id="traits"></div>
 <div class="card" id="limits"></div>
 <div class="card" id="books"></div>
 
 <script>
-const scores = JSON.parse(localStorage.getItem("scores"));
+// 1. 读取问卷得分
+const scores = JSON.parse(localStorage.getItem("scores")) || [0,0,0,0];
 const types = [
-{
-name:"制度理性取向",
-thinker:"约翰·罗尔斯",
-img: "rawls.jpg", // 对应图片文件名
-traits:"重视程序、规则与可讨论性",
-limits:"容易低估权力与现实差异",
-books:["《正义论》","《政治自由主义》"]
-},
-{
-name:"权力批判取向",
-thinker:"米歇尔·福柯",
-img: "foucault.jpg",
-traits:"善于揭示结构与话语",
-limits:"不易给出规范答案",
-books:["《规训与惩罚》","《知识考古学》"]
-},
-{
-name:"现实物质取向",
-thinker:"卡尔·马克思",
-img: "marx.jpg",
-traits:"强调条件、资源与阶级",
-limits:"容易被视为经济还原",
-books:["《德意志意识形态》","《资本论》"]
-},
-{
-name:"解构反思取向",
-thinker:"雅克·德里达",
-img: "derrida.jpg",
-traits:"拒绝单一立场",
-limits:"不适合快速决策",
-books:["《论文字学》","《书写与差异》"]
-}
+  {
+    name:"制度理性取向",
+    thinker:"约翰·罗尔斯",
+    img: "rawls.jpg", // 替换为你的图片文件名/URL
+    traits:"重视程序、规则与可讨论性",
+    limits:"容易低估权力与现实差异",
+    books:["《正义论》","《政治自由主义》"]
+  },
+  {
+    name:"权力批判取向",
+    thinker:"米歇尔·福柯",
+    img: "foucault.jpg",
+    traits:"善于揭示结构与话语",
+    limits:"不易给出规范答案",
+    books:["《规训与惩罚》","《知识考古学》"]
+  },
+  {
+    name:"现实物质取向",
+    thinker:"卡尔·马克思",
+    img: "marx.jpg",
+    traits:"强调条件、资源与阶级",
+    limits:"容易被视为经济还原",
+    books:["《德意志意识形态》","《资本论》"]
+  },
+  {
+    name:"解构反思取向",
+    thinker:"雅克·德里达",
+    img: "derrida.jpg",
+    traits:"拒绝单一立场",
+    limits:"不适合快速决策",
+    books:["《论文字学》","《书写与差异》"]
+  }
 ];
 
-const max = scores.indexOf(Math.max(...scores));
-const t = types[max];
+// 2. 渲染思想家信息+图片
+const maxIndex = scores.indexOf(Math.max(...scores));
+const activeType = types[maxIndex];
+document.getElementById("thinker-img").src = activeType.img;
+document.getElementById("thinker-img").alt = activeType.thinker;
+document.getElementById("type").innerText = activeType.name;
+document.getElementById("thinker").innerText = "代表思想家：" + activeType.thinker;
+document.getElementById("traits").innerText = "表达特点：" + activeType.traits;
+document.getElementById("limits").innerText = "可能局限：" + activeType.limits;
+document.getElementById("books").innerText = "进阶阅读：" + activeType.books.join("、");
 
-// 渲染图片
-document.getElementById("thinker-img").src = t.img;
-document.getElementById("thinker-img").alt = t.thinker;
+// 3. 渲染成分条形图
+const scoreBars = document.getElementById("score-bars");
+const maxScore = Math.max(...scores) || 1; // 避免除以0
+types.forEach((type, index) => {
+  const score = scores[index];
+  const percent = (score / maxScore) * 100;
 
-// 原有文本渲染
-document.getElementById("type").innerText = t.name;
-document.getElementById("thinker").innerText = "代表思想家：" + t.thinker;
-document.getElementById("traits").innerText = "表达特点：" + t.traits;
-document.getElementById("limits").innerText = "可能局限：" + t.limits;
-document.getElementById("books").innerText = "进阶阅读：" + t.books.join("、");
+  // 构建条形图DOM
+  const barDiv = document.createElement("div");
+  barDiv.className = "bar-container";
+
+  const labelDiv = document.createElement("div");
+  labelDiv.className = "bar-label";
+  labelDiv.innerHTML = `<span>${type.name}</span><span>${score} 分</span>`;
+
+  const bgDiv = document.createElement("div");
+  bgDiv.className = "bar-bg";
+
+  const fillDiv = document.createElement("div");
+  fillDiv.className = "bar-fill";
+  fillDiv.style.width = `${percent}%`;
+
+  // 拼接DOM
+  bgDiv.appendChild(fillDiv);
+  barDiv.appendChild(labelDiv);
+  barDiv.appendChild(bgDiv);
+  scoreBars.appendChild(barDiv);
+});
+
+// 4. 渲染简易雷达图
+function drawRadarGrid() {
+  const canvas = document.getElementById("radarGrid");
+  const size = Math.min(canvas.offsetWidth, canvas.offsetHeight);
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const radius = size / 2 - 20;
+
+  // 清空画布
+  ctx.clearRect(0, 0, size, size);
+  ctx.strokeStyle = "#f0f0f0";
+  ctx.lineWidth = 1;
+
+  // 绘制十字轴线
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY - radius);
+  ctx.lineTo(centerX, centerY + radius);
+  ctx.moveTo(centerX - radius, centerY);
+  ctx.lineTo(centerX + radius, centerY);
+  ctx.stroke();
+
+  // 绘制3层同心圆
+  for (let i = 1; i <= 3; i++) {
+    const r = radius * (i / 3);
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
+
+function drawRadarPath() {
+  const canvas = document.getElementById("radarGrid");
+  const size = Math.min(canvas.offsetWidth, canvas.offsetHeight);
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const radius = size / 2 - 20;
+  const maxScore = Math.max(...scores) || 1;
+
+  // 4个维度的坐标（上、右、下、左）
+  const points = [
+    [centerX, centerY - (scores[0]/maxScore)*radius], // 制度理性
+    [centerX + (scores[1]/maxScore)*radius, centerY], // 权力批判
+    [centerX, centerY + (scores[2]/maxScore)*radius], // 现实物质
+    [centerX - (scores[3]/maxScore)*radius, centerY], // 解构反思
+  ];
+
+  // 拼接雷达图路径
+  let path = `M ${points[0][0]} ${points[0][1]} L ${points[1][0]} ${points[1][1]} L ${points[2][0]} ${points[2][1]} L ${points[3][0]} ${points[3][1]} Z`;
+  document.getElementById("radarPath").setAttribute("d", path);
+}
+
+// 初始化雷达图
+window.addEventListener("load", () => {
+  drawRadarGrid();
+  drawRadarPath();
+});
+
+// 窗口缩放时重新绘制雷达图
+window.addEventListener("resize", () => {
+  drawRadarGrid();
+  drawRadarPath();
+});
 </script>
-
 </body>
 </html>
