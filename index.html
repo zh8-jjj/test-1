@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>当你表达观点时，你更像哪一种人？</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="progress-container">
+  <div id="progress-bar"></div>
+</div>
+
+<div id="quiz">
+
+<!-- Q1 -->
+<section class="question active">
+<h2>Q1 当“自由”被反复提起时，你第一反应是：</h2>
+<button onclick="answer(0)">先问：现有法律和程序能否保障自由？</button>
+<button onclick="answer(1)">怀疑：谁在喊“自由”，这句话有话语目的？</button>
+<button onclick="answer(2)">想到：没有生存保障时，自由是空壳子。</button>
+<button onclick="answer(3)">警觉：统一的“自由”会抹去差异与经验。</button>
+</section>
+
+<!-- Q2 -->
+<section class="question">
+<h2>Q2 在公共讨论中你常扮演：</h2>
+<button onclick="answer(0)">把情绪拉回证据与逻辑的人。</button>
+<button onclick="answer(1)">揭示谁在定义议题和获益的人。</button>
+<button onclick="answer(2)">提醒大家注意现实后果与可行性的人。</button>
+<button onclick="answer(3)">质疑讨论方式、建议换问法的人。</button>
+</section>
+
+<!-- Q3 -->
+<section class="question">
+<h2>Q3 对“只是个人选择”这句话你通常：</h2>
+<button onclick="answer(0)">认为只要不伤人就应尊重个人选择。</button>
+<button onclick="answer(1)">觉得在不平等结构下谈选择是掩盖问题。</button>
+<button onclick="answer(2)">认为选择被物质条件严重限制。</button>
+<button onclick="answer(3)">怀疑“选择”是否被构建成便利叙事。</button>
+</section>
+
+<!-- Q4 -->
+<section class="question">
+<h2>Q4 你最不耐烦的表达风格是：</h2>
+<button onclick="answer(0)">完全凭感觉、拒绝证据的人。</button>
+<button onclick="answer(1)">自称中立却回避权力问题的人。</button>
+<button onclick="answer(2)">只谈理想、不谈现实可行性的人。</button>
+<button onclick="answer(3)">迅速下结论、关闭讨论的人。</button>
+</section>
+
+<!-- Q5 -->
+<section class="question">
+<h2>Q5 哪种“成功叙事”最让你警惕：</h2>
+<button onclick="answer(0)">依赖规则漏洞或灰色手段的成功。</button>
+<button onclick="answer(1)">建立在他人沉默与牺牲上的成功。</button>
+<button onclick="answer(2)">少数样本被当作普适模板的成功。</button>
+<button onclick="answer(3)">被塑成唯一正确路线的成功神话。</button>
+</section>
+
+<!-- Q6 -->
+<section class="question">
+<h2>Q6 在亲密关系中你最难忍受：</h2>
+<button onclick="answer(0)">责任模糊、承诺随时可撤回。</button>
+<button onclick="answer(1)">权力不对等被掩饰为“性格差”。</button>
+<button onclick="answer(2)">经济与现实压力被浪漫化掩盖。</button>
+<button onclick="answer(3)">被期待扮演某种理想化角色。</button>
+</section>
+
+<!-- Q7 -->
+<section class="question">
+<h2>Q7 你更相信哪种改变更可行：</h2>
+<button onclick="answer(0)">通过法律与制度的渐进修正。</button>
+<button onclick="answer(1)">通过冲突与对抗迫使结构改变。</button>
+<button onclick="answer(2)">通过资源再分配改善生存条件。</button>
+<button onclick="answer(3)">通过话语改变重塑公共想象。</button>
+</section>
+
+<!-- Q8 -->
+<section class="question">
+<h2>Q8 看到网络舆论战你通常会：</h2>
+<button onclick="answer(0)">先看谁的论证更经得起推敲。</button>
+<button onclick="answer(1)">观察谁在失去或获得话语权。</button>
+<button onclick="answer(2)">想这场争论会不会转化成现实行动。</button>
+<button onclick="answer(3)">对情绪化的二元对立感到厌倦。</button>
+</section>
+
+<!-- Q9 -->
+<section class="question">
+<h2>Q9 你最不信任的一句话是：</h2>
+<button onclick="answer(0)">“规则对所有人都是一样的。”</button>
+<button onclick="answer(1)">“别上纲上线。”</button>
+<button onclick="answer(2)">“只要努力就会有回报。”</button>
+<button onclick="answer(3)">“事情没那么复杂。”</button>
+</section>
+
+<!-- Q10 -->
+<section class="question">
+<h2>Q10 在表达时你最看重：</h2>
+<button onclick="answer(0)">论证是否严密、证据是否充分。</button>
+<button onclick="answer(1)">是否揭示了潜在的权力与利益。</button>
+<button onclick="answer(2)">是否直指现实影响与可行路径。</button>
+<button onclick="answer(3)">是否为不同经验保留发声位。</button>
+</section>
+
+<!-- Q11 -->
+<section class="question">
+<h2>Q11 当有人被“取消”时你的倾向是：</h2>
+<button onclick="answer(0)">按程序与事实区分责任与惩罚。</button>
+<button onclick="answer(1)">看到这背后有权力博弈与选择性惩戒。</button>
+<button onclick="answer(2)">认为谁被取消反映了不平等的权力分布。</button>
+<button onclick="answer(3)">更在意语言暴力与审判机制本身。</button>
+</section>
+
+<!-- Q12 -->
+<section class="question">
+<h2>Q12 你如何看“中立”这一立场：</h2>
+<button onclick="answer(0)">在程序中中立有其必要性。</button>
+<button onclick="answer(1)">常被既得利益用来保护现状。</button>
+<button onclick="answer(2)">通常忽视结构性不平等的事实。</button>
+<button onclick="answer(3)">有时是假装无立场的策略。</button>
+</section>
+
+<!-- Q13 -->
+<section class="question">
+<h2>Q13 不同意某观点时你通常：</h2>
+<button onclick="answer(0)">逐条指出逻辑与证据问题。</button>
+<button onclick="answer(1)">质疑发言者的立场与位置。</button>
+<button onclick="answer(2)">强调其脱离现实的不可操作性。</button>
+<button onclick="answer(3)">选择不在该话语框架内争论。</button>
+</section>
+
+<!-- Q14 -->
+<section class="question">
+<h2>Q14 你对“自由”的贴近理解是：</h2>
+<button onclick="answer(0)">在程序与规则内得到保护的状态。</button>
+<button onclick="answer(1)">不被压迫性结构所限制的空间。</button>
+<button onclick="answer(2)">有基本生存保障后才有实际选择。</button>
+<button onclick="answer(3)">不被单一范式定义的多元可能。</button>
+</section>
+
+<!-- Q15 -->
+<section class="question">
+<h2>Q15 你在何种情形下更倾向保持沉默：</h2>
+<button onclick="answer(0)">讨论缺乏基本事实与证据时。</button>
+<button onclick="answer(1)">表达成本过高、权力差距明显时。</button>
+<button onclick="answer(2)">问题被个人道德化且脱离现实时。</button>
+<button onclick="answer(3)">语言已无法承载当事人经验时。</button>
+</section>
+
+<!-- Q16 -->
+<section class="question">
+<h2>Q16 社会共识在你看来更像：</h2>
+<button onclick="answer(0)">通过理性讨论逐步形成的结果。</button>
+<button onclick="answer(1)">被强势群体通过话语与制度塑造的产物。</button>
+<button onclick="answer(2)">随资源与利益分配自然生成的副产品。</button>
+<button onclick="answer(3)">一种临时叙事妥协，随时可被重写。</button>
+</section>
+
+<!-- Q17 -->
+<section class="question">
+<h2>Q17 你最警惕哪类道德判断：</h2>
+<button onclick="answer(0)">脱离具体语境、抽象化的判断。</button>
+<button onclick="answer(1)">明显服务于权力或既得利益的判断。</button>
+<button onclick="answer(2)">忽视物质条件的道德化判断。</button>
+<button onclick="answer(3)">要求同质化、抹平差异的道德论述。</button>
+</section>
+
+<!-- Q18 -->
+<section class="question">
+<h2>Q18 让你愤怒的通常是：</h2>
+<button onclick="answer(0)">论证被故意曲解或践踏事实。</button>
+<button onclick="answer(1)">不公被合理化或被修饰成合理。</button>
+<button onclick="answer(2)">现实苦难与生存问题被忽视。</button>
+<button onclick="answer(3)">真实经验被否认、消音或抹去。</button>
+</section>
+
+<!-- Q19 -->
+<section class="question">
+<h2>Q19 你认为“进步”最易被伪装为：</h2>
+<button onclick="answer(0)">表面上的制度修补（改词不改权力）。</button>
+<button onclick="answer(1)">象征性事件或人物被放大成普遍胜利。</button>
+<button onclick="answer(2)">少数人的上升被当作可复制样本。</button>
+<button onclick="answer(3)">话语更新而非实质权力置换。</button>
+</section>
+
+<!-- Q20 -->
+<section class="question">
+<h2>Q20 如果只能选一句最符合你的表达信念：</h2>
+<button onclick="answer(0)">规则可被完善，但需程序与耐心。</button>
+<button onclick="answer(1)">权力必须被直视与重构，否则空谈。</button>
+<button onclick="answer(2)">先解决物质生存再谈话语与形式。</button>
+<button onclick="answer(3)">承认并保留差异，比追求统一更重要。</button>
+</section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

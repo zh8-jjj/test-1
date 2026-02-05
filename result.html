@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你的思想画像</title>
+<style>
+body{
+font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei";
+background:#f5f6f8;
+margin:0;
+padding:20px;
+}
+.card{
+background:#fff;
+border-radius:14px;
+padding:24px;
+margin-bottom:24px;
+}
+h1{font-size:28px;}
+.bar-bg{background:#e5e7eb;height:10px;border-radius:6px;}
+.bar-fill{background:#2f6fed;height:10px;border-radius:6px;}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h1 id="type"></h1>
+<p id="thinker"></p>
+</div>
+
+<div class="card" id="traits"></div>
+<div class="card" id="limits"></div>
+<div class="card" id="books"></div>
+
+<script>
+const scores = JSON.parse(localStorage.getItem("scores"));
+const types = [
+{
+name:"制度理性取向",
+thinker:"约翰·罗尔斯",
+traits:"重视程序、规则与可讨论性",
+limits:"容易低估权力与现实差异",
+books:["《正义论》","《政治自由主义》"]
+},
+{
+name:"权力批判取向",
+thinker:"米歇尔·福柯",
+traits:"善于揭示结构与话语",
+limits:"不易给出规范答案",
+books:["《规训与惩罚》","《知识考古学》"]
+},
+{
+name:"现实物质取向",
+thinker:"卡尔·马克思",
+traits:"强调条件、资源与阶级",
+limits:"容易被视为经济还原",
+books:["《德意志意识形态》","《资本论》"]
+},
+{
+name:"解构反思取向",
+thinker:"雅克·德里达",
+traits:"拒绝单一立场",
+limits:"不适合快速决策",
+books:["《论文字学》","《书写与差异》"]
+}
+];
+
+const max = scores.indexOf(Math.max(...scores));
+const t = types[max];
+
+document.getElementById("type").innerText = t.name;
+document.getElementById("thinker").innerText = "代表思想家：" + t.thinker;
+document.getElementById("traits").innerText = "表达特点：" + t.traits;
+document.getElementById("limits").innerText = "可能局限：" + t.limits;
+document.getElementById("books").innerText = "进阶阅读：" + t.books.join("、");
+</script>
+
+</body>
+</html>
