@@ -98,6 +98,17 @@
     <p class="guide-text">基于经典思想家的表达范式，通过20组情境式思辨题，定位你的思想表达坐标。</p>
     <button class="start-btn">开启思想溯源</button>
     <p class="curator">@黑房子新沙发BlackHouseNewSofa</p>
-</body>
 
+    <!-- 新增的跳转逻辑 -->
+    <script>
+        // 1. 获取按钮元素
+        const startBtn = document.querySelector('.start-btn');
+        
+        // 2. 为按钮添加点击事件
+        startBtn.addEventListener('click', function() {
+            // 3. 跳转到question.html页面
+            window.location.href = 'question.html';
+        });
+    </script>
+</body>
 </html>
