@@ -5,19 +5,27 @@ background: #f5f6f8;
 color: #222;
 }
 
+/* 优化进度条样式 - 更醒目 */
 #progress-container {
 position: fixed;
 top: 0;
+left: 0; /* 补充left确保全屏 */
 width: 100%;
-height: 6px;
-background: #e5e7eb;
+height: 8px; /* 加高1px增强视觉 */
+background: #f0f0f0; /* 浅灰底色对比更强 */
+z-index: 9999; /* 确保不被遮挡 */
+box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* 轻微阴影增加层次感 */
 }
 
 #progress-bar {
 height: 100%;
 width: 0%;
-background: #2f6fed;
-transition: width 0.3s;
+/* 高饱和度渐变主色，醒目且不刺眼 */
+background: linear-gradient(90deg, #e63946, #ff7e67);
+/* 增加内阴影强化立体感 */
+box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+transition: width 0.4s ease-in-out; /* 更顺滑的过渡 */
+border-radius: 4px; /* 轻微圆角更精致 */
 }
 
 .question {
@@ -45,4 +53,10 @@ padding: 14px;
 margin-bottom: 14px;
 font-size: 16px;
 text-align: left;
+/* 按钮hover效果（可选，提升交互） */
+transition: border-color 0.2s;
+}
+
+button:hover {
+border-color: #e63946; /* 与进度条主色呼应 */
 }
