@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>哲学表达范式测试 - 结果页</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- 引入雷达图依赖 -->
     <style>
-        /* 保留所有原有样式，无需修改 */
         * {
             margin: 0;
             padding: 0;
@@ -15,6 +15,7 @@
         body {
             background-color: #f8f9fa;
             padding: 20px;
+            color: #2c3e50;
         }
         .container {
             max-width: 900px;
@@ -24,12 +25,13 @@
             border-radius: 12px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.08);
         }
+        /* 结果头部样式 */
         .result-header {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 40px;
         }
         .result-title {
-            font-size: 24px;
+            font-size: 28px;
             color: #2c3e50;
             margin-bottom: 8px;
             font-weight: 600;
@@ -38,15 +40,31 @@
             font-size: 15px;
             color: #6c757d;
         }
-        .result-content {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
+        /* 雷达图区域 */
+        .radar-card {
+            background-color: #fafafa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
         }
+        .radar-card h3 {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .radar-container {
+            max-width: 400px;
+            height: 400px;
+            margin: 0 auto;
+        }
+        /* 核心得分区域 */
         .score-card {
             background-color: #fafafa;
             border-radius: 10px;
             padding: 25px;
+            margin-bottom: 30px;
         }
         .score-card h3 {
             font-size: 18px;
@@ -79,49 +97,64 @@
             margin-top: 5px;
             line-height: 1.5;
         }
+        /* 表达类型卡片 - 核心优化 */
         .type-card {
             border-radius: 10px;
-            padding: 30px;
+            padding: 40px 30px;
             border: 2px solid #2c3e50;
+            margin-bottom: 30px;
         }
-        .type-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+        /* 精神导师头像样式 */
+        .mentor-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background-color: #e9ecef; /* 占位背景，替换为实际头像URL即可 */
+            background-size: cover;
+            background-position: center;
+            border: 3px solid #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .type-icon {
-            font-size: 32px;
-        }
-        .type-name {
-            font-size: 22px;
+        /* 精神导师名字样式 */
+        .mentor-name {
+            font-size: 24px;
             color: #2c3e50;
             font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
         }
-        .type-mentor {
-            font-size: 14px;
-            color: #6c757d;
-            margin-top: 3px;
-        }
-        .type-quote {
+        .mentor-quote {
             font-style: italic;
             color: #495057;
             border-left: 3px solid #2c3e50;
             padding-left: 15px;
-            margin: 20px 0;
+            margin: 25px 0;
             line-height: 1.8;
+            font-size: 16px;
         }
+        /* 内容板块样式 */
         .type-section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .type-section h4 {
-            font-size: 16px;
+            font-size: 18px;
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .type-section h4::before {
+            content: "";
+            width: 4px;
+            height: 18px;
+            background-color: #2c3e50;
+            display: inline-block;
         }
         .type-section p, .type-section ul {
-            font-size: 15px;
+            font-size: 16px;
             color: #495057;
             line-height: 1.8;
         }
@@ -129,8 +162,20 @@
             padding-left: 20px;
         }
         .type-section li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
+        /* 踩雷点特殊样式 */
+        .mine-item {
+            position: relative;
+            padding-left: 10px;
+        }
+        .mine-item::before {
+            content: "⚠️";
+            position: absolute;
+            left: -20px;
+            top: 2px;
+        }
+        /* 书单样式 */
         .book-list {
             display: flex;
             flex-wrap: wrap;
@@ -145,6 +190,7 @@
             color: #2c3e50;
             border: 1px solid #dee2e6;
         }
+        /* 重新测试按钮 */
         .restart-btn {
             margin: 30px auto 0;
             display: block;
@@ -160,194 +206,222 @@
         .restart-btn:hover {
             background-color: #1a252f;
         }
+        /* 响应式适配 */
         @media (max-width: 600px) {
             .container {
                 padding: 20px 15px;
             }
             .result-title {
-                font-size: 20px;
+                font-size: 24px;
             }
-            .type-name {
-                font-size: 18px;
+            .mentor-name {
+                font-size: 20px;
             }
             .score-item {
                 min-width: 100%;
             }
             .type-card {
-                padding: 20px;
+                padding: 25px 20px;
+            }
+            .radar-container {
+                max-width: 300px;
+                height: 300px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- 结果页头部 -->
         <div class="result-header">
             <h1 class="result-title">你的哲学表达范式结果</h1>
             <p class="result-subtitle">基于20道题的4项核心指标分析，匹配你的专属表达类型</p>
         </div>
 
-        <div class="result-content">
-            <!-- 核心指标得分 -->
-            <div class="score-card">
-                <h3>📊 核心指标得分（得分=选项选择次数÷20×100%）</h3>
-                <div class="score-list">
-                    <div class="score-item">
-                        <div class="score-label">理性规范值（A选项）</div>
-                        <div class="score-value" id="score-0">0%</div>
-                        <div class="score-desc">依赖逻辑、规则、证据的程度</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-label">权力敏感度（B选项）</div>
-                        <div class="score-value" id="score-1">0%</div>
-                        <div class="score-desc">识别表达背后利益与权力关系的能力</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-label">现实落地力（C选项）</div>
-                        <div class="score-value" id="score-2">0%</div>
-                        <div class="score-desc">关注观点可行性与现实影响的程度</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-label">差异包容度（D选项）</div>
-                        <div class="score-value" id="score-3">0%</div>
-                        <div class="score-desc">重视不同个体经验与多元视角的程度</div>
-                    </div>
-                </div>
+        <!-- 雷达图区域 -->
+        <div class="radar-card">
+            <h3>🧠 你的思维成分雷达图</h3>
+            <div class="radar-container">
+                <canvas id="radarChart"></canvas>
             </div>
-
-            <!-- 表达类型结果 -->
-            <div class="type-card" id="type-content">
-                <div class="type-header">
-                    <div class="type-icon" id="type-icon">📏</div>
-                    <div>
-                        <div class="type-name" id="type-name">规则理性型</div>
-                        <div class="type-mentor" id="type-mentor">精神导师：罗尔斯</div>
-                    </div>
-                </div>
-
-                <div class="type-quote" id="type-quote">正义是社会制度的首要价值，正像真理是思想体系的首要价值一样。</div>
-
-                <div class="type-section">
-                    <h4>基本介绍</h4>
-                    <p id="type-intro">20 世纪最具影响力的政治哲学家之一，现代自由主义正义理论的奠基人。他的理论重新定义了 “公平”，强调社会制度和讨论必须建立在大家都认可的客观规则之上，为现代社会的理性秩序提供了思想基础。</p>
-                </div>
-
-                <div class="type-section">
-                    <h4>核心特质</h4>
-                    <ul id="type-traits">
-                        <li>表达以逻辑、证据为核心，拒绝模糊表述与无依据的情绪化发言。</li>
-                        <li>重视程序正义，认为讨论需遵循统一标准，不接受 “双重标准”。</li>
-                        <li>能快速将偏离主题的讨论拉回核心，聚焦事实与逻辑闭环。</li>
-                    </ul>
-                </div>
-
-                <div class="type-section">
-                    <h4>局限性</h4>
-                    <ul id="type-limitations">
-                        <li>易忽略情绪的传递价值，沟通中被认为 “过于冷静”。</li>
-                        <li>过度纠结规则细节，可能降低讨论效率。</li>
-                        <li>对无明确规则的场景适应性弱，缺乏灵活变通。</li>
-                    </ul>
-                </div>
-
-                <div class="type-section">
-                    <h4>进阶书单推荐</h4>
-                    <div class="book-list" id="type-books">
-                        <div class="book-item">《简单的逻辑学》</div>
-                        <div class="book-item">《公正：该如何做是好？》</div>
-                        <div class="book-item">《学会提问》</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 修复：重新测试按钮跳转到答题页（question.html） -->
-            <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
         </div>
+
+        <!-- 核心指标得分 -->
+        <div class="score-card">
+            <h3>📊 核心指标得分（得分=选项选择次数÷20×100%）</h3>
+            <div class="score-list">
+                <div class="score-item">
+                    <div class="score-label">理性规范值（A选项）</div>
+                    <div class="score-value" id="score-0">0%</div>
+                    <div class="score-desc">依赖逻辑、规则、证据的程度</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">权力敏感度（B选项）</div>
+                    <div class="score-value" id="score-1">0%</div>
+                    <div class="score-desc">识别表达背后利益与权力关系的能力</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">现实落地力（C选项）</div>
+                    <div class="score-value" id="score-2">0%</div>
+                    <div class="score-desc">关注观点可行性与现实影响的程度</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">差异包容度（D选项）</div>
+                    <div class="score-value" id="score-3">0%</div>
+                    <div class="score-desc">重视不同个体经验与多元视角的程度</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表达类型结果 -->
+        <div class="type-card" id="type-content">
+            <!-- 精神导师头像（替换background-image的URL为实际头像） -->
+            <div class="mentor-avatar" id="mentor-avatar" style="background-image: url('https://placeholder.pics/svg/120x120/EEEEEE/666666/默认头像')"></div>
+            <!-- 精神导师名字 -->
+            <div class="mentor-name" id="mentor-name">规则理性型</div>
+            
+            <!-- 引言 -->
+            <div class="mentor-quote" id="mentor-quote">正义是社会制度的首要价值，正像真理是思想体系的首要价值一样。</div>
+
+            <!-- 核心特质 -->
+            <div class="type-section">
+                <h4>核心特质</h4>
+                <ul id="type-traits">
+                    <li>表达以逻辑、证据为核心，拒绝模糊表述与无依据的情绪化发言。</li>
+                    <li>重视程序正义，认为讨论需遵循统一标准，不接受 “双重标准”。</li>
+                    <li>能快速将偏离主题的讨论拉回核心，聚焦事实与逻辑闭环。</li>
+                </ul>
+            </div>
+
+            <!-- 局限性 + 踩雷点 -->
+            <div class="type-section">
+                <h4>局限性 & 生活踩雷点</h4>
+                <ul id="type-limitations">
+                    <li>易忽略情绪的传递价值，沟通中被认为 “过于冷静”，缺乏共情力。</li>
+                    <li>过度纠结规则细节，可能降低讨论效率，被评价为“钻牛角尖”。</li>
+                    <li>对无明确规则的场景适应性弱，缺乏灵活变通，易陷入“规则焦虑”。</li>
+                    <li class="mine-item">职场中：过度纠正同事的“逻辑漏洞”，忽略沟通氛围，引发团队反感。</li>
+                    <li class="mine-item">生活中：和家人朋友争论时，只讲“道理”不讲“情面”，伤害亲密关系。</li>
+                    <li class="mine-item">社交中：拒绝“模糊的善意”，要求所有表达都“精准严谨”，显得不近人情。</li>
+                </ul>
+            </div>
+
+            <!-- 特质解读（替代原基本介绍） -->
+            <div class="type-section">
+                <h4>特质解读</h4>
+                <p id="type-intro">20 世纪最具影响力的政治哲学家之一，现代自由主义正义理论的奠基人。他的理论重新定义了 “公平”，强调社会制度和讨论必须建立在大家都认可的客观规则之上，为现代社会的理性秩序提供了思想基础。你的表达风格高度契合这一核心：相信规则是保障沟通公平的底层逻辑，认为脱离逻辑和证据的表达都是无效的。</p>
+            </div>
+
+            <!-- 进阶书单推荐 -->
+            <div class="type-section">
+                <h4>进阶书单推荐</h4>
+                <div class="book-list" id="type-books">
+                    <div class="book-item">《简单的逻辑学》</div>
+                    <div class="book-item">《公正：该如何做是好？》</div>
+                    <div class="book-item">《学会提问》</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 重新测试按钮 -->
+        <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
     </div>
 
     <script>
-        // 保留所有原有typeMap定义（无需修改）
+        // 4种表达类型的完整数据（已丰富局限性+新增踩雷点）
         const typeMap = [
             {
                 icon: "📏",
                 name: "规则理性型",
-                mentor: "精神导师：罗尔斯",
+                avatar: "https://placeholder.pics/svg/120x120/E8F4F8/2c3e50/罗尔斯", // 替换为罗尔斯实际头像URL
                 quote: "正义是社会制度的首要价值，正像真理是思想体系的首要价值一样。",
-                intro: "20 世纪最具影响力的政治哲学家之一，现代自由主义正义理论的奠基人。他的理论重新定义了 “公平”，强调社会制度和讨论必须建立在大家都认可的客观规则之上，为现代社会的理性秩序提供了思想基础。",
+                intro: "20 世纪最具影响力的政治哲学家之一，现代自由主义正义理论的奠基人。他的理论重新定义了 “公平”，强调社会制度和讨论必须建立在大家都认可的客观规则之上，为现代社会的理性秩序提供了思想基础。你的表达风格高度契合这一核心：相信规则是保障沟通公平的底层逻辑，认为脱离逻辑和证据的表达都是无效的。",
                 traits: [
                     "表达以逻辑、证据为核心，拒绝模糊表述与无依据的情绪化发言。",
                     "重视程序正义，认为讨论需遵循统一标准，不接受 “双重标准”。",
                     "能快速将偏离主题的讨论拉回核心，聚焦事实与逻辑闭环。"
                 ],
                 limitations: [
-                    "易忽略情绪的传递价值，沟通中被认为 “过于冷静”。",
-                    "过度纠结规则细节，可能降低讨论效率。",
-                    "对无明确规则的场景适应性弱，缺乏灵活变通。"
+                    "易忽略情绪的传递价值，沟通中被认为 “过于冷静”，缺乏共情力。",
+                    "过度纠结规则细节，可能降低讨论效率，被评价为“钻牛角尖”。",
+                    "对无明确规则的场景适应性弱，缺乏灵活变通，易陷入“规则焦虑”。",
+                    "职场中：过度纠正同事的“逻辑漏洞”，忽略沟通氛围，引发团队反感。",
+                    "生活中：和家人朋友争论时，只讲“道理”不讲“情面”，伤害亲密关系。",
+                    "社交中：拒绝“模糊的善意”，要求所有表达都“精准严谨”，显得不近人情。"
                 ],
                 books: ["《简单的逻辑学》", "《公正：该如何做是好？》", "《学会提问》"]
             },
             {
                 icon: "🔍",
                 name: "权力解构型",
-                mentor: "精神导师：福柯",
+                avatar: "https://placeholder.pics/svg/120x120/F5F0F5/2c3e50/福柯", // 替换为福柯实际头像URL
                 quote: "话语即权力。",
-                intro: "法国国宝级哲学家，后现代主义思想的核心代表。他颠覆了人们对 “权力” 的认知，指出权力无处不在，渗透在日常语言、教育和社会规范中，教会了现代人如何 “看清” 话语背后的控制与压迫。",
+                intro: "法国国宝级哲学家，后现代主义思想的核心代表。他颠覆了人们对 “权力” 的认知，指出权力无处不在，渗透在日常语言、教育和社会规范中，教会了现代人如何 “看清” 话语背后的控制与压迫。你的表达风格精准匹配这一特质：习惯拆解语言背后的权力逻辑，不轻易相信“中立”“客观”的表面话术。",
                 traits: [
                     "擅长拆解表达背后的权力关系，能快速识别 “中立话术” 下的利益导向。",
                     "不相信 “纯粹中立”，习惯追问 “谁在主导话题”“谁被剥夺了话语权”。",
                     "关注被忽视的群体，擅长从底层逻辑拆解热门观点，不被表面话术迷惑。"
                 ],
                 limitations: [
-                    "易过度怀疑，对常规表达过度解读，引发他人反感。",
-                    "过度聚焦 “拆解问题”，缺乏正向推进讨论的具体方案。",
-                    "表达偏犀利，忽略沟通中的情绪感受，难以达成共识。"
+                    "易过度怀疑，对常规表达过度解读，引发他人反感，被评价为“想太多”。",
+                    "过度聚焦 “拆解问题”，缺乏正向推进讨论的具体方案，显得“只破不立”。",
+                    "表达偏犀利，忽略沟通中的情绪感受，难以达成共识，易陷入对立。",
+                    "职场中：过度拆解领导/同事的发言，被认为“刺头”“不合作”，影响职业发展。",
+                    "生活中：解读亲友的日常表达时过度“上纲上线”，引发不必要的矛盾。",
+                    "社交中：总是“挑刺”式沟通，让他人产生防备心理，难以建立轻松的关系。"
                 ],
                 books: ["《娱乐至死》", "《置身事内：中国政府与经济发展》", "《策略思维：商界、政界及日常生活中的策略竞争》"]
             },
             {
                 icon: "🧱",
                 name: "现实务实型",
-                mentor: "精神导师：韦伯",
+                avatar: "https://placeholder.pics/svg/120x120/F8F8F8/2c3e50/韦伯", // 替换为韦伯实际头像URL
                 quote: "人是悬挂在自己编织的意义之网上的动物，但意义需贴合现实土壤。",
-                intro: "现代社会学的奠基人之一，被称为 “组织理论之父”。他是理性主义的集大成者，强调 “理想必须落地”，提出的 “科层制” 和 “工具理性” 理论，至今仍是职场、政府和大型组织运行的底层逻辑。",
+                intro: "现代社会学的奠基人之一，被称为 “组织理论之父”。他是理性主义的集大成者，强调 “理想必须落地”，提出的 “科层制” 和 “工具理性” 理论，至今仍是职场、政府和大型组织运行的底层逻辑。你的表达风格深度契合这一核心：一切以“落地”为导向，拒绝无意义的空谈。",
                 traits: [
                     "表达以 “可行性” 为核心，发言必问 “具体怎么做”，反感 “画大饼” 式空谈。",
                     "认为物质基础决定表达底气，优先关注生存与现实利益相关话题。",
                     "擅长将复杂问题拆解为可执行步骤，聚焦实际结果而非抽象价值。"
                 ],
                 limitations: [
-                    "易被认为 “过于功利”，缺乏对长期价值与精神层面的关注。",
-                    "过度关注现实条件，限制思维的开放性与想象力。",
-                    "对 “无即时收益” 的深度思想交流缺乏耐心。"
+                    "易被认为 “过于功利”，缺乏对长期价值与精神层面的关注，显得“短视”。",
+                    "过度关注现实条件，限制思维的开放性与想象力，难以接受“试错”。",
+                    "对 “无即时收益” 的深度思想交流缺乏耐心，显得“浮躁”。",
+                    "职场中：只关注KPI和短期结果，忽略团队文化、长期规划等软性价值。",
+                    "生活中：过度计算“性价比”，让旅行、礼物等美好体验变得“功利化”。",
+                    "社交中：拒绝“无用的闲聊”，让人际关系变成“利益交换”，缺乏温度。"
                 ],
                 books: ["《贫穷的本质：我们为什么摆脱不了贫穷》", "《搞定：无压工作的艺术》", "《远见：如何规划职业生涯 3 大阶段》"]
             },
             {
                 icon: "🌈",
                 name: "差异包容型",
-                mentor: "精神导师：巴特勒",
+                avatar: "https://placeholder.pics/svg/120x120/F0F8F8/2c3e50/巴特勒", // 替换为巴特勒实际头像URL
                 quote: "差异不是威胁，而是理解的起点。",
-                intro: "当代最具影响力的哲学家之一，女性主义与性别研究的领军人物。她挑战了传统的 “性别” 观念，主张身份是流动的，每个人的经验都值得尊重，她的思想让 “多元” 和 “包容” 成为现代社会的重要价值观。",
+                intro: "当代最具影响力的哲学家之一，女性主义与性别研究的领军人物。她挑战了传统的 “性别” 观念，主张身份是流动的，每个人的经验都值得尊重，她的思想让 “多元” 和 “包容” 成为现代社会的重要价值观。你的表达风格完美契合这一核心：尊重所有个体的独特经验，拒绝“一刀切”的判断。",
                 traits: [
                     "重视个体经验差异，不轻易用自身标准评判他人的表达。",
                     "反感 “一刀切” 的结论，主动关注少数群体的表达需求。",
                     "认为讨论的核心是 “理解彼此”，而非强行说服或统一观点。"
                 ],
                 limitations: [
-                    "过度包容易模糊自身立场，难以清晰表达观点。",
-                    "过度在意他人感受，可能压抑自身真实想法，导致沟通低效。",
-                    "对 “明确立场” 的快速决策场景适应性弱。"
+                    "过度包容易模糊自身立场，难以清晰表达观点，被认为“没有主见”。",
+                    "过度在意他人感受，可能压抑自身真实想法，导致沟通低效、自我内耗。",
+                    "对 “明确立场” 的快速决策场景适应性弱，显得“优柔寡断”。",
+                    "职场中：因过度包容不同意见，导致决策效率低，被认为“领导力不足”。",
+                    "生活中：为了“不吵架”刻意妥协，长期压抑自身需求，引发心理失衡。",
+                    "社交中：难以拒绝他人的不合理要求，成为“老好人”，消耗自身精力。"
                 ],
                 books: ["《你当像鸟飞往你的山》", "《偏见的本质》", "《沟通的艺术：看入人里，看出人外》"]
             }
         ];
 
-        // 保留所有原有得分解析逻辑（无需修改）
+        // 从URL获取得分
         function getScoresFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
             const scoreStr = urlParams.get('scores');
             if (!scoreStr) {
-                // 修复：无得分时跳转到答题页（而非首页）
-                window.location.href = './question.html'; 
+                window.location.href = './question.html';
                 return [];
             }
             const rawScores = scoreStr.split(',').map(Number);
@@ -355,24 +429,77 @@
             return { raw: rawScores, percent: percentScores };
         }
 
+        // 生成雷达图
+        function initRadarChart(percentScores) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['理性规范值', '权力敏感度', '现实落地力', '差异包容度'],
+                    datasets: [{
+                        label: '你的思维成分',
+                        data: percentScores,
+                        backgroundColor: 'rgba(44, 62, 80, 0.2)',
+                        borderColor: 'rgba(44, 62, 80, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(44, 62, 80, 1)',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.1)' },
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            pointLabels: {
+                                font: { size: 14, family: "SimSun" },
+                                color: '#2c3e50'
+                            },
+                            ticks: {
+                                backdropColor: 'transparent',
+                                color: '#6c757d',
+                                stepSize: 20,
+                                max: 100,
+                                min: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // 渲染结果
         function showResult() {
             const { raw, percent } = getScoresFromURL();
             if (percent.length !== 4) return;
 
+            // 1. 渲染核心得分
             percent.forEach((score, index) => {
                 document.getElementById(`score-${index}`).textContent = `${score}%`;
             });
 
+            // 2. 生成雷达图
+            initRadarChart(percent);
+
+            // 3. 匹配表达类型
             let maxScore = Math.max(...raw);
             let maxIndex = raw.indexOf(maxScore);
             const currentType = typeMap[maxIndex];
 
-            document.getElementById('type-icon').textContent = currentType.icon;
-            document.getElementById('type-name').textContent = currentType.name;
-            document.getElementById('type-mentor').textContent = currentType.mentor;
-            document.getElementById('type-quote').textContent = currentType.quote;
+            // 4. 渲染类型内容
+            document.getElementById('mentor-avatar').style.backgroundImage = `url('${currentType.avatar}')`;
+            document.getElementById('mentor-name').textContent = currentType.name;
+            document.getElementById('mentor-quote').textContent = currentType.quote;
             document.getElementById('type-intro').textContent = currentType.intro;
             
+            // 渲染核心特质
             const traitsList = document.getElementById('type-traits');
             traitsList.innerHTML = '';
             currentType.traits.forEach(trait => {
@@ -381,14 +508,20 @@
                 traitsList.appendChild(li);
             });
 
+            // 渲染局限性+踩雷点
             const limitationsList = document.getElementById('type-limitations');
             limitationsList.innerHTML = '';
-            currentType.limitations.forEach(limitation => {
+            currentType.limitations.forEach((limitation, idx) => {
                 const li = document.createElement('li');
                 li.textContent = limitation;
+                // 给踩雷点添加特殊样式（后3条是踩雷点）
+                if (idx >= 3) {
+                    li.className = 'mine-item';
+                }
                 limitationsList.appendChild(li);
             });
 
+            // 渲染书单
             const bookList = document.getElementById('type-books');
             bookList.innerHTML = '';
             currentType.books.forEach(book => {
@@ -399,11 +532,12 @@
             });
         }
 
-        // 修复：重新测试跳转到答题页（question.html）
+        // 重新测试跳转
         function restartQuiz() {
             window.location.href = './question.html';
         }
 
+        // 页面加载时渲染结果
         window.onload = showResult;
     </script>
 </body>
