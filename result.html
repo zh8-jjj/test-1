@@ -1,283 +1,262 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>你的思想画像</title>
-<!-- 引入共用的CSS（确保和问卷页进度条样式统一） -->
-<link rel="stylesheet" href="style.css">
-<style>
-/* 结果页专属样式（包含图片、条形图、雷达图） */
-body{
-  padding: 20px;
-  padding-top: 40px; /* 避开顶部进度条 */
-}
-.card{
-  background:#fff;
-  border-radius:14px;
-  padding:24px;
-  margin-bottom:24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-h1{font-size:28px;margin:0;}
-h3{font-size:20px;margin:16px 0;}
-
-/* 思想家图片样式 */
-.thinker-card {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap; /* 移动端换行 */
-}
-.thinker-img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%; /* 圆形头像 */
-  object-fit: cover; /* 保持比例 */
-  border: 3px solid #f0f0f0;
-  transition: transform 0.2s;
-}
-.thinker-img:hover {
-  transform: scale(1.05); /* 悬浮放大 */
-}
-
-/* 成分条形图样式 */
-.bar-container {
-  margin: 12px 0;
-}
-.bar-label {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
-  font-size: 14px;
-  color: #333;
-}
-.bar-bg{
-  background:#f0f0f0;
-  height: 12px;
-  border-radius: 6px;
-  overflow: hidden;
-}
-.bar-fill{
-  /* 和进度条同色系，保持视觉统一 */
-  background: linear-gradient(90deg, #e63946, #ff7e67);
-  height: 100%;
-  border-radius: 6px;
-  transition: width 0.5s ease;
-}
-
-/* 简易雷达图样式 */
-.radar-container {
-  width: 100%;
-  max-width: 400px;
-  height: 400px;
-  margin: 0 auto;
-  position: relative;
-}
-.radar-grid {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.radar-points {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  fill: rgba(230, 57, 70, 0.2); /* 进度条主色浅透版 */
-  stroke: #e63946;
-  stroke-width: 2px;
-}
-.radar-label {
-  position: absolute;
-  font-size: 12px;
-  color: #666;
-  font-weight: 500;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表达类型测评结果页</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 全局样式重置与基础设置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "SimSun", serif; /* 统一宋体 */
+            background-color: #f5f5f7; /* 高级浅灰背景 */
+            color: #1a1a1a; /* 主黑色 */
+            line-height: 1.6;
+            padding: 16px;
+        }
+        /* 容器样式 - 限定宽度+居中+白色背景 */
+        .result-container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05); /* 轻阴影提升质感 */
+        }
+        /* 标题类样式 */
+        .type-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            border-left: 4px solid #2b6cb0; /* 蓝色侧边线点缀 */
+            padding-left: 12px;
+        }
+        .module-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2b6cb0; /* 主蓝色 */
+            margin: 20px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e5e7eb; /* 浅灰分割线 */
+        }
+        /* 精神导师模块 */
+        .mentor-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin: 12px 0;
+        }
+        .mentor-avatar {
+            width: 100px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e5e7eb;
+        }
+        .mentor-info {
+            flex: 1;
+        }
+        .mentor-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+        .mentor-desc {
+            font-size: 14px;
+            color: #4b5563; /* 中灰色 */
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+        .mentor-quote {
+            font-size: 14px;
+            color: #2b6cb0;
+            font-style: italic;
+            padding-left: 8px;
+            border-left: 2px solid #94a3b8; /* 浅蓝灰 */
+        }
+        /* 核心特质/踩雷点/局限性 - 列表样式 */
+        .list-container {
+            margin: 12px 0;
+        }
+        .feature-item, .mine-item, .limit-item {
+            font-size: 14px;
+            color: #374151; /* 深灰色 */
+            margin-bottom: 8px;
+            padding-left: 12px;
+            position: relative;
+        }
+        .feature-item::before {
+            content: "•";
+            color: #2b6cb0;
+            position: absolute;
+            left: 0;
+        }
+        .mine-item::before {
+            content: "⚠️";
+            font-size: 12px;
+            position: absolute;
+            left: 0;
+        }
+        .limit-item::before {
+            content: "▸";
+            color: #4b5563;
+            position: absolute;
+            left: 0;
+        }
+        /* 雷达图容器 */
+        .radar-container {
+            width: 100%;
+            height: 300px;
+            margin: 16px 0;
+        }
+        /* 进阶书单样式 */
+        .book-list {
+            margin: 12px 0;
+            background-color: #f8fafc; /* 极浅灰 */
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .book-item {
+            font-size: 14px;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .book-item::before {
+            content: "📚";
+            font-size: 12px;
+        }
+        /* 响应式适配 */
+        @media (max-width: 480px) {
+            .mentor-card {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .mentor-avatar {
+                width: 80px;
+                height: 100px;
+            }
+            .type-title {
+                font-size: 20px;
+            }
+            .module-title {
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-<!-- 1. 思想家信息+图片 -->
-<div class="card thinker-card">
-  <img id="thinker-img" class="thinker-img" src="" alt="思想家头像">
-  <div>
-    <h1 id="type"></h1>
-    <p id="thinker" style="font-size:16px;color:#666;margin:8px 0 0 0;"></p>
-  </div>
-</div>
+    <div class="result-container">
+        <!-- 1. 表达类型 -->
+        <h1 class="type-title">规则理性型 | 罗尔斯同流者</h1>
 
-<!-- 2. 成分条形图（各维度得分） -->
-<div class="card">
-  <h3>各维度得分</h3>
-  <div id="score-bars"></div>
-</div>
+        <!-- 2. 精神导师模块 -->
+        <h2 class="module-title">精神导师</h2>
+        <div class="mentor-card">
+            <img src="https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2874277370.jpg" alt="罗尔斯" class="mentor-avatar">
+            <div class="mentor-info">
+                <div class="mentor-name">约翰·罗尔斯</div>
+                <div class="mentor-desc">20世纪最具影响力的政治哲学家之一，现代自由主义正义理论的奠基人。他的理论重新定义了“公平”，强调社会制度和讨论必须建立在大家都认可的客观规则之上，为现代社会的理性秩序提供了思想基础。</div>
+                <div class="mentor-quote">“正义是社会制度的首要价值，正像真理是思想体系的首要价值一样。”</div>
+            </div>
+        </div>
 
-<!-- 3. 简易雷达图（思想倾向） -->
-<div class="card">
-  <h3>思想倾向雷达图</h3>
-  <div class="radar-container">
-    <canvas class="radar-grid" id="radarGrid"></canvas>
-    <path class="radar-points" id="radarPath"></path>
-    <!-- 雷达图标签 -->
-    <div class="radar-label" style="top: 0; left: 50%; transform: translateX(-50%);">制度理性</div>
-    <div class="radar-label" style="top: 50%; right: 0; transform: translateY(-50%);">权力批判</div>
-    <div class="radar-label" style="bottom: 0; left: 50%; transform: translateX(-50%);">现实物质</div>
-    <div class="radar-label" style="top: 50%; left: 0; transform: translateY(-50%);">解构反思</div>
-  </div>
-</div>
+        <!-- 3. 核心特质 -->
+        <h2 class="module-title">核心特质</h2>
+        <div class="list-container">
+            <div class="feature-item">表达以逻辑、证据为核心，拒绝模糊表述与无依据的情绪化发言。</div>
+            <div class="feature-item">重视程序正义，认为讨论需遵循统一标准，不接受“双重标准”。</div>
+            <div class="feature-item">能快速将偏离主题的讨论拉回核心，聚焦事实与逻辑闭环。</div>
+        </div>
 
-<!-- 4. 原有文本信息 -->
-<div class="card" id="traits"></div>
-<div class="card" id="limits"></div>
-<div class="card" id="books"></div>
+        <!-- 4. 指标雷达图 -->
+        <h2 class="module-title">你的指标成分</h2>
+        <div class="radar-container">
+            <canvas id="radarChart"></canvas>
+        </div>
 
-<script>
-// 1. 读取问卷得分
-const scores = JSON.parse(localStorage.getItem("scores")) || [0,0,0,0];
-const types = [
-  {
-    name:"制度理性取向",
-    thinker:"约翰·罗尔斯",
-    img: "rawls.jpg", // 替换为你的图片文件名/URL
-    traits:"重视程序、规则与可讨论性",
-    limits:"容易低估权力与现实差异",
-    books:["《正义论》","《政治自由主义》"]
-  },
-  {
-    name:"权力批判取向",
-    thinker:"米歇尔·福柯",
-    img: "foucault.jpg",
-    traits:"善于揭示结构与话语",
-    limits:"不易给出规范答案",
-    books:["《规训与惩罚》","《知识考古学》"]
-  },
-  {
-    name:"现实物质取向",
-    thinker:"卡尔·马克思",
-    img: "marx.jpg",
-    traits:"强调条件、资源与阶级",
-    limits:"容易被视为经济还原",
-    books:["《德意志意识形态》","《资本论》"]
-  },
-  {
-    name:"解构反思取向",
-    thinker:"雅克·德里达",
-    img: "derrida.jpg",
-    traits:"拒绝单一立场",
-    limits:"不适合快速决策",
-    books:["《论文字学》","《书写与差异》"]
-  }
-];
+        <!-- 5. 踩雷点 -->
+        <h2 class="module-title">踩雷点</h2>
+        <div class="list-container">
+            <div class="mine-item">容易被他人贴上“冷漠”标签，忽略情绪沟通的价值。</div>
+            <div class="mine-item">过度纠结规则细节，导致讨论效率低，引发他人不耐烦。</div>
+        </div>
 
-// 2. 渲染思想家信息+图片
-const maxIndex = scores.indexOf(Math.max(...scores));
-const activeType = types[maxIndex];
-document.getElementById("thinker-img").src = activeType.img;
-document.getElementById("thinker-img").alt = activeType.thinker;
-document.getElementById("type").innerText = activeType.name;
-document.getElementById("thinker").innerText = "代表思想家：" + activeType.thinker;
-document.getElementById("traits").innerText = "表达特点：" + activeType.traits;
-document.getElementById("limits").innerText = "可能局限：" + activeType.limits;
-document.getElementById("books").innerText = "进阶阅读：" + activeType.books.join("、");
+        <!-- 6. 局限性 -->
+        <h2 class="module-title">局限性</h2>
+        <div class="list-container">
+            <div class="limit-item">易忽略情绪的传递价值，沟通中被认为“过于冷静”。</div>
+            <div class="limit-item">过度纠结规则细节，可能降低讨论效率。</div>
+            <div class="limit-item">对无明确规则的场景适应性弱，缺乏灵活变通。</div>
+        </div>
 
-// 3. 渲染成分条形图
-const scoreBars = document.getElementById("score-bars");
-const maxScore = Math.max(...scores) || 1; // 避免除以0
-types.forEach((type, index) => {
-  const score = scores[index];
-  const percent = (score / maxScore) * 100;
+        <!-- 7. 进阶书单 -->
+        <h2 class="module-title">进阶书单</h2>
+        <div class="book-list">
+            <div class="book-item">《简单的逻辑学》</div>
+            <div class="book-item">《公正：该如何做是好？》</div>
+            <div class="book-item">《学会提问》</div>
+        </div>
+    </div>
 
-  // 构建条形图DOM
-  const barDiv = document.createElement("div");
-  barDiv.className = "bar-container";
-
-  const labelDiv = document.createElement("div");
-  labelDiv.className = "bar-label";
-  labelDiv.innerHTML = `<span>${type.name}</span><span>${score} 分</span>`;
-
-  const bgDiv = document.createElement("div");
-  bgDiv.className = "bar-bg";
-
-  const fillDiv = document.createElement("div");
-  fillDiv.className = "bar-fill";
-  fillDiv.style.width = `${percent}%`;
-
-  // 拼接DOM
-  bgDiv.appendChild(fillDiv);
-  barDiv.appendChild(labelDiv);
-  barDiv.appendChild(bgDiv);
-  scoreBars.appendChild(barDiv);
-});
-
-// 4. 渲染简易雷达图
-function drawRadarGrid() {
-  const canvas = document.getElementById("radarGrid");
-  const size = Math.min(canvas.offsetWidth, canvas.offsetHeight);
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext("2d");
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const radius = size / 2 - 20;
-
-  // 清空画布
-  ctx.clearRect(0, 0, size, size);
-  ctx.strokeStyle = "#f0f0f0";
-  ctx.lineWidth = 1;
-
-  // 绘制十字轴线
-  ctx.beginPath();
-  ctx.moveTo(centerX, centerY - radius);
-  ctx.lineTo(centerX, centerY + radius);
-  ctx.moveTo(centerX - radius, centerY);
-  ctx.lineTo(centerX + radius, centerY);
-  ctx.stroke();
-
-  // 绘制3层同心圆
-  for (let i = 1; i <= 3; i++) {
-    const r = radius * (i / 3);
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-}
-
-function drawRadarPath() {
-  const canvas = document.getElementById("radarGrid");
-  const size = Math.min(canvas.offsetWidth, canvas.offsetHeight);
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const radius = size / 2 - 20;
-  const maxScore = Math.max(...scores) || 1;
-
-  // 4个维度的坐标（上、右、下、左）
-  const points = [
-    [centerX, centerY - (scores[0]/maxScore)*radius], // 制度理性
-    [centerX + (scores[1]/maxScore)*radius, centerY], // 权力批判
-    [centerX, centerY + (scores[2]/maxScore)*radius], // 现实物质
-    [centerX - (scores[3]/maxScore)*radius, centerY], // 解构反思
-  ];
-
-  // 拼接雷达图路径
-  let path = `M ${points[0][0]} ${points[0][1]} L ${points[1][0]} ${points[1][1]} L ${points[2][0]} ${points[2][1]} L ${points[3][0]} ${points[3][1]} Z`;
-  document.getElementById("radarPath").setAttribute("d", path);
-}
-
-// 初始化雷达图
-window.addEventListener("load", () => {
-  drawRadarGrid();
-  drawRadarPath();
-});
-
-// 窗口缩放时重新绘制雷达图
-window.addEventListener("resize", () => {
-  drawRadarGrid();
-  drawRadarPath();
-});
-</script>
+    <script>
+        // 初始化雷达图
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        const radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['理性规范值', '权力敏感度', '现实落地力', '差异包容度', '逻辑完整性'],
+                datasets: [{
+                    label: '你的指标得分',
+                    data: [85, 40, 60, 35, 80], // 示例数据，可根据实际得分调整
+                    backgroundColor: 'rgba(43, 108, 176, 0.1)', // 浅蓝填充
+                    borderColor: 'rgba(43, 108, 176, 0.8)', // 主蓝色边框
+                    borderWidth: 2,
+                    pointBackgroundColor: '#2b6cb0', // 点的颜色
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: '#e5e7eb', // 浅灰角度线
+                            lineWidth: 1
+                        },
+                        grid: {
+                            color: '#e5e7eb' // 浅灰网格线
+                        },
+                        pointLabels: {
+                            font: {
+                                family: 'SimSun', // 宋体
+                                size: 12
+                            },
+                            color: '#4b5563' // 中灰色标签
+                        },
+                        ticks: {
+                            display: false, // 隐藏刻度数值
+                            max: 100,
+                            min: 0
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // 隐藏图例
+                    }
+                },
+                maintainAspectRatio: false // 取消宽高比限制，适配容器
+            }
+        });
+    </script>
 </body>
 </html>
